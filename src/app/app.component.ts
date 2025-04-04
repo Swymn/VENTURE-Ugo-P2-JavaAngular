@@ -9,5 +9,5 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'VENTURE-Ugo-P1';
+  title = 'VENTURE-Ugo-P2';
 }
