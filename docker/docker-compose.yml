@@ -1,0 +1,9 @@
+services:
+  angular-app:
+    build:
+      context: ../
+      dockerfile: docker/Dockerfile
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production

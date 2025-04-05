@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { take } from 'rxjs';
+import { OlympicService } from './core/services/olympic.service';
 
 @Component({
   selector: 'app-root',
@@ -8,6 +10,11 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss'
 })
-export class AppComponent {
-  title = 'VENTURE-Ugo-P2';
+export class AppComponent implements OnInit {
+  constructor(private readonly olympicService: OlympicService) {
+  }
+
+  ngOnInit(): void {
+    this.olympicService.loadInitialData().pipe(take(1)).subscribe();
+  }
 }
