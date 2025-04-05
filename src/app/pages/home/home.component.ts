@@ -5,6 +5,7 @@ import { OlympicService } from '../../core/services/olympic.service';
 import { BaseChartDirective } from 'ng2-charts';
 import { ActiveElement, ChartConfiguration, ChartEvent } from 'chart.js';
 import { map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,10 @@ export class HomeComponent implements OnInit {
   public pieChartData: ChartConfiguration['data'] = { labels: [], datasets: [{ data: [] }] };
   public pieChartType: ChartConfiguration['type'] = 'pie';
 
-  constructor(private readonly olympicService: OlympicService) {}
+  constructor(
+    private readonly olympicService: OlympicService,
+    private readonly router: Router
+  ) {}
 
   ngOnInit(): void {
     this.loadOlympicData();
@@ -35,18 +39,7 @@ export class HomeComponent implements OnInit {
   onChartClick(_: ChartEvent, activeElements: ActiveElement[]): void {
     if (activeElements.length > 0) {
       const index = activeElements[0].index;
-      const country = this.pieChartData.labels ? this.pieChartData.labels[index] : '';
-
-      this.olympics$.pipe(
-        map(olympics => {
-          if (olympics) {
-            const olympic = olympics.find(o => o.country === country);
-            if (olympic) {
-              console.log(olympic);
-            }
-          }
-        })
-      ).subscribe();
+      this.router.navigate(['/details', index]);
     }
   }
 
