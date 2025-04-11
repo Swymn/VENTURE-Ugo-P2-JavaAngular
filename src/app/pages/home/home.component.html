@@ -1,19 +1,19 @@
 <section class="flex flex-col items-center justify-center gap-12">
   <h1 class="my-5 p-5 bg-cyan-700 text-white rounded-xl text-4xl">Medals per Country</h1>
 
-  <section class="flex flex-col md:flex-row w-1/2 gap-4 items-center justify-evenly">
-    <div class="border-cyan-700 border-4 rounded-xl p-4 text-center">
-      <h2 class="text-md md:text-2xl text-gray-700 mb-0">Number of JOs</h2>
-      <span class="text-4xl font-bold">{{ statistic.numberOfJOs }}</span>
-    </div>
+  <section class="flex flex-col md:flex-row w-3/4 gap-4 items-center justify-evenly">
+    <app-card
+      [title]="'Number of JOs'"
+      [description]="statistic.numberOfJOs"
+    />
 
-    <div class="border-cyan-700 border-4 rounded-xl p-4 text-center ">
-      <h2 class="text-md md:text-2xl text-gray-700 mb-0">Number of countries</h2>
-      <span class="text-4xl font-bold">{{ statistic.numberOfCountries }}</span>
-    </div>
+    <app-card
+      [title]="'Number of countries'"
+      [description]="statistic.numberOfCountries"
+    />
   </section>
 
-  <div class="w-[70vw] h-[70vh]">
+  <div class="w-[100vw] h-[40vh] md:w-[80vw] md:h-[50vh]">
     <ngx-charts-pie-chart
       [results]="pieChartData"
       [labels]="true"

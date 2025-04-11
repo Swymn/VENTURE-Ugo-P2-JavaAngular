@@ -4,32 +4,38 @@ import { Olympic } from '../../core/models/olympic';
 import { OlympicService } from '../../core/services/olympic.service';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ChartConfiguration } from 'chart.js';
+import { Color, LegendPosition, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
+import { RenderedData } from '../../core/models/rendered-data';
+import { CardComponent } from '../../shared/components/card/card.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [RouterLink],
+  imports: [
+    RouterLink,
+    CommonModule,
+    NgxChartsModule,
+    CardComponent
+  ],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnInit {
 
   public olympic$: Observable<Olympic[] | null> = of(null);
-  public statistic = { numberOfEntries: 0, totalMedals: 0, totalNumberOfAthletes: 0 };
-  public lineChartData: ChartConfiguration['data'] = { datasets: [], labels: [] };
-  public lineChartType: ChartConfiguration['type'] = 'line';
-  public lineChartOptions: ChartConfiguration['options'] = {
-    elements: {
-      line: {
-        tension: 0.5
-      }
-    },
-    plugins: {
-      legend: {
-        display: true,
-      }
-    }
+  public statistic = { numberOfEntries: 0, totalMedals: 0, totalNumberOfAthletes: 0, countryName: '' };
+  public lineChartData: { name: string, series: RenderedData[] }[] = [];
+  public xAxisLabel = 'Year';
+  public yAxisLabel = 'Medals';
+  public legendPosition: LegendPosition = LegendPosition.Below;
+  public schemaColor: Color = {
+    name: 'Country Color',
+    domain: [
+      '#0e7498',
+    ],
+    group: ScaleType.Ordinal,
+    selectable: true,
   }
 
   constructor(
@@ -41,19 +47,23 @@ export class DetailsComponent implements OnInit {
     this.loadOlympicData();
   }
 
-  private getOlympicIndexFromRoute(): number {
-    return Number(this.route.snapshot.paramMap.get('index'));
+  private getCountryNameFromRoute(): string | null {
+    return this.route.snapshot.paramMap.get('countryName');
   }
 
   private loadOlympicData(): void {
-    const olympicIndex = this.getOlympicIndexFromRoute();
+    const countryName = this.getCountryNameFromRoute();
     this.olympic$ = this.olympicService.getOlympics();
     this.olympic$.pipe(
       map(olympics => {
         if (olympics) {
-          const olympic = olympics[olympicIndex];
-          this.updateStatistics(olympic);
-          this.updateChart(olympic);
+          const olympic = olympics.find(olympic => olympic.country === countryName);
+          if (olympic) {
+            this.updateStatistics(olympic);
+            this.updateChart(olympic);
+          } else {
+            console.warn(`Olympic data for country ${countryName} not found.`);
+          }
         }
       })
     ).subscribe()
@@ -64,21 +74,17 @@ export class DetailsComponent implements OnInit {
       numberOfEntries: olympic.participations.length,
       totalMedals: olympic.participations.reduce((acc, participation) => acc + participation.medalsCount, 0),
       totalNumberOfAthletes: olympic.participations.reduce((acc, participation) => acc + participation.athleteCount, 0),
+      countryName: olympic.country
     };
   }
 
   private updateChart(olympic: Olympic): void {
-    this.lineChartData.labels = olympic.participations.map(participation => participation.year);
-    this.lineChartData.datasets = [{
-      data: olympic.participations.map(participation => participation.medalsCount),
-      label: 'Medals',
-      backgroundColor: 'rgba(14,116,144,0.2)',
-      borderColor: 'rgba(14,116,144,1)',
-      pointBackgroundColor: 'rgba(14,116,144,1)',
-      pointBorderColor: '#fff',
-      pointHoverBackgroundColor: '#fff',
-      pointHoverBorderColor: 'rgba(14,116,144,1)',
-      fill: 'origin',
-    }]
+    this.lineChartData = [{
+      name: olympic.country,
+      series: olympic.participations.map(participation => ({
+        name: `${participation.year}`,
+        value: participation.medalsCount
+      }))
+    }];
   }
 }

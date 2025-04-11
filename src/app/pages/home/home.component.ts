@@ -6,11 +6,12 @@ import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { RenderedData } from '../../core/models/rendered-data';
+import { CardComponent } from '../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [NgxChartsModule],
+  imports: [NgxChartsModule, CardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })

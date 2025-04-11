@@ -1,29 +1,46 @@
-<section class="flex flex-col items-center justify-center gap-12 mx-4 my-10">
+<section class="flex flex-col items-center justify-center gap-12">
 
-  <p class="p-5 bg-cyan-700 text-white rounded-xl text-3xl md:text-4xl">Name of the country</p>
+  <h1 class="w-3/4 md:w-3/12 m-5 p-5 bg-cyan-700 text-white text-center rounded-xl text-3xl md:text-4xl">{{ statistic.countryName }}</h1>
 
-  <section class="flex flex-col md:flex-row gap-4 w-3/4 items-center justify-evenly">
-    <div class="border-cyan-700 border-4 rounded-xl p-4 text-center">
-      <p class="text-2xl text-gray-700 mb-0">Number of entries</p>
-      <span class="text-4xl font-bold">{{ statistic.numberOfEntries }}</span>
-    </div>
-
-    <div class="border-cyan-700 border-4 rounded-xl p-4 text-center">
-      <p class="text-2xl text-gray-700 mb-0">Total number medals</p>
-      <span class="text-4xl font-bold">{{ statistic.totalMedals }}</span>
-    </div>
-
-    <div class="border-cyan-700 border-4 rounded-xl p-4 text-center">
-      <p class="text-2xl text-gray-700 mb-0">Total number of athletes</p>
-      <span class="text-4xl font-bold">{{ statistic.totalNumberOfAthletes }}</span>
-    </div>
+  <section class="flex flex-col md:flex-row w-3/4 gap-4 items-center justify-evenly">
+    <app-card
+      [title]="'Number of entries'"
+      [description]="statistic.numberOfEntries"
+    />
+    <app-card
+      [title]="'Total number medals'"
+      [description]="statistic.totalMedals"
+    />
+    <app-card
+      [title]="'Total number of athletes'"
+      [description]="statistic.totalNumberOfAthletes"
+    />
   </section>
 
-  <div class="w-full h-2/5 md:w-2/5 md:h-full">
+  <div class="w-[100vw] h-[40vh] md:w-[80vw] md:h-[50vh]">
+    <ngx-charts-line-chart
+      class=""
+      [results]="lineChartData"
+      [scheme]="schemaColor"
+      [xAxis]="true"
+      [showXAxisLabel]="true"
+      [xAxisLabel]="xAxisLabel"
+      [yAxis]="true"
+      [showYAxisLabel]="true"
+      [yAxisLabel]="yAxisLabel"
+      [legendPosition]="legendPosition">
+      <ng-template #seriesTooltipTemplate let-model="model">
+        <div class="py-2 px-4">
+          <h2 class="text-md font-bold m-0">{{ model[0].series }} ({{ model[0].name }})</h2>
+          <span>{{ model[0].value }} 🏅</span>
+        </div>
+      </ng-template>
+    </ngx-charts-line-chart>
 
   </div>
 
-  <div class="flex justify-items-start w-1/3">
+
+  <div class="flex justify-center md:justify-start w-[80vw]">
     <a class="bg-cyan-700 text-white p-6 rounded text-md md:text-xl" routerLink="/">Go Back</a>
   </div>
 </section>
