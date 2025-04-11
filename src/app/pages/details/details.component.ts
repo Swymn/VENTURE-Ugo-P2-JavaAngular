@@ -1,22 +1,19 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Olympic } from '../../core/models/olympic';
 import { OlympicService } from '../../core/services/olympic.service';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts';
 
 @Component({
   selector: 'app-details',
   standalone: true,
-  imports: [BaseChartDirective, RouterLink],
+  imports: [RouterLink],
   templateUrl: './details.component.html',
   styleUrl: './details.component.scss'
 })
 export class DetailsComponent implements OnInit {
-
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
 
   public olympic$: Observable<Olympic[] | null> = of(null);
   public statistic = { numberOfEntries: 0, totalMedals: 0, totalNumberOfAthletes: 0 };

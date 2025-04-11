@@ -1,25 +1,31 @@
-<section class="flex flex-col items-center justify-center gap-12 mx-4 my-10">
-  <p class="p-5 bg-cyan-700 text-white rounded-xl text-4xl">Medals per Country</p>
+<section class="flex flex-col items-center justify-center gap-12">
+  <h1 class="my-5 p-5 bg-cyan-700 text-white rounded-xl text-4xl">Medals per Country</h1>
 
   <section class="flex flex-col md:flex-row w-1/2 gap-4 items-center justify-evenly">
     <div class="border-cyan-700 border-4 rounded-xl p-4 text-center">
-      <p class="text-2xl text-gray-700 mb-0">Number of JOs</p>
+      <h2 class="text-md md:text-2xl text-gray-700 mb-0">Number of JOs</h2>
       <span class="text-4xl font-bold">{{ statistic.numberOfJOs }}</span>
     </div>
 
     <div class="border-cyan-700 border-4 rounded-xl p-4 text-center ">
-      <p class="text-2xl text-gray-700 mb-0">Number of countries</p>
+      <h2 class="text-md md:text-2xl text-gray-700 mb-0">Number of countries</h2>
       <span class="text-4xl font-bold">{{ statistic.numberOfCountries }}</span>
     </div>
   </section>
 
-  <div class="w-full h-1/4 md:w-1/4 md:h-full my-4">
-    <canvas
-      baseChart
-      [data]="pieChartData"
-      [type]="pieChartType"
-      [options]="pieChartOptions">
-    </canvas>
+  <div class="w-[70vw] h-[70vh]">
+    <ngx-charts-pie-chart
+      [results]="pieChartData"
+      [labels]="true"
+      [doughnut]="false"
+      (select)="onChartClick($event)">
+      <ng-template #tooltipTemplate let-model="model">
+        <div class="py-2 px-4">
+          <h2 class="text-md font-bold m-0">{{ model.name }}</h2>
+          <span>{{ model.value }} 🏅</span>
+        </div>
+      </ng-template>
+    </ngx-charts-pie-chart>
   </div>
 </section>
 

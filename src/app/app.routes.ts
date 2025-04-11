@@ -9,7 +9,7 @@ export const routes: Routes = [
     component: HomeComponent,
   },
   {
-    path: 'details/:index',
+    path: 'details/:countryName',
     component: DetailsComponent,
   },
   {
