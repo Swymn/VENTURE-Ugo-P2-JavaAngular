@@ -3,15 +3,15 @@ import { Observable, of } from 'rxjs';
 import { Olympic } from '../../core/models/olympic';
 import { OlympicService } from '../../core/services/olympic.service';
 import { map } from 'rxjs/operators';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import {ActivatedRoute, Router, RouterLink} from '@angular/router';
 import { Color, LegendPosition, NgxChartsModule, ScaleType } from '@swimlane/ngx-charts';
 import { RenderedData } from '../../core/models/rendered-data';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-details',
   standalone: true,
+  selector: 'app-details',
   imports: [
     RouterLink,
     CommonModule,
@@ -40,7 +40,8 @@ export class DetailsComponent implements OnInit {
 
   constructor(
     private readonly olympicService: OlympicService,
-    private readonly route: ActivatedRoute
+    private readonly route: ActivatedRoute,
+    private readonly router: Router
   ) {}
 
   ngOnInit(): void {
@@ -63,6 +64,7 @@ export class DetailsComponent implements OnInit {
             this.updateChart(olympic);
           } else {
             console.warn(`Olympic data for country ${countryName} not found.`);
+            this.router.navigate(['/not-found']);
           }
         }
       })
