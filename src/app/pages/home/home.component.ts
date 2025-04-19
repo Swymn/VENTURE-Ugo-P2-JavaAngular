@@ -1,31 +1,25 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Olympic } from '../../core/models/olympic';
 import { Observable, of } from 'rxjs';
 import { OlympicService } from '../../core/services/olympic.service';
-import { BaseChartDirective } from 'ng2-charts';
-import { ActiveElement, ChartConfiguration, ChartEvent } from 'chart.js';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { RenderedData } from '../../core/models/rendered-data';
+import { CardComponent } from '../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [BaseChartDirective],
+  imports: [NgxChartsModule, CardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
 
-  @ViewChild(BaseChartDirective) chart?: BaseChartDirective;
-
   public olympics$: Observable<Olympic[] | null> = of(null);
   public statistic = { numberOfJOs: 0, numberOfCountries: 0 };
-  public pieChartOptions: ChartConfiguration['options'] = {
-    plugins: { legend: { display: true, position: 'bottom' } },
-    onClick: this.onChartClick.bind(this)
-  };
-  public pieChartData: ChartConfiguration['data'] = { labels: [], datasets: [{ data: [] }] };
-  public pieChartType: ChartConfiguration['type'] = 'pie';
+  public pieChartData: RenderedData[] = [];
 
   constructor(
     private readonly olympicService: OlympicService,
@@ -36,11 +30,8 @@ export class HomeComponent implements OnInit {
     this.loadOlympicData();
   }
 
-  onChartClick(_: ChartEvent, activeElements: ActiveElement[]): void {
-    if (activeElements.length > 0) {
-      const index = activeElements[0].index;
-      this.router.navigate(['/details', index]);
-    }
+  onChartClick(event: { name: string, value: number }): void {
+    this.router.navigate(['/details', event.name]);
   }
 
   private loadOlympicData(): void {
@@ -57,17 +48,18 @@ export class HomeComponent implements OnInit {
 
   private updateStatistics(olympics: Olympic[]): void {
     this.statistic = {
-      numberOfJOs: olympics.reduce((acc, olympic) => acc + olympic.participations.length, 0),
+      numberOfJOs: olympics
+        .reduce((acc, olympic) => acc + olympic.participations.length, 0),
       numberOfCountries: olympics.length,
     };
   }
 
   private updateChartData(olympics: Olympic[]): void {
-    this.pieChartData = {
-      labels: olympics.map(olympic => olympic.country),
-      datasets: [{
-        data: olympics.map(olympic => olympic.participations.reduce((acc, participation) => acc + participation.medalsCount, 0)),
-      }]
-    };
+    this.pieChartData = olympics.map(olympic => ({
+      value: olympic.participations
+        .map((participation) => participation.medalsCount)
+        .reduce((acc, medals) => acc + medals, 0),
+      name: olympic.country,
+    }));
   }
 }
